@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
+import 'package:humanizer/l10n/humanizer_localizations.dart';
 import 'package:humanizer/src/units_of_measurement/rationals.dart';
 import 'package:humanizer/src/units_of_measurement/time_constants.dart';
 import 'package:meta/meta.dart';
@@ -288,41 +290,42 @@ extension TimeUnitExtensions on TimeUnit {
   String getName({
     required String locale,
   }) {
+    final loc = lookupAppLocalizations(Locale(locale.split('_').first));
     switch (this) {
       case TimeUnit.nanosecond:
-        return 'nanosecond';
+        return loc.nanosecond;
       case TimeUnit.microsecond:
-        return 'microsecond';
+        return loc.microsecond;
       case TimeUnit.millisecond:
-        return 'millisecond';
+        return loc.millisecond;
       case TimeUnit.centisecond:
-        return 'centisecond';
+        return loc.centisecond;
       case TimeUnit.decisecond:
-        return 'decisecond';
+        return loc.decisecond;
       case TimeUnit.second:
-        return 'second';
+        return loc.second;
       case TimeUnit.decasecond:
-        return 'decasecond';
+        return loc.decasecond;
       case TimeUnit.minute:
-        return 'minute';
+        return loc.minute;
       case TimeUnit.hour:
-        return 'hour';
+        return loc.hour;
       case TimeUnit.day:
-        return 'day';
+        return loc.day;
       case TimeUnit.week:
-        return 'week';
+        return loc.week;
       case TimeUnit.fortnight:
-        return 'fortnight';
+        return loc.fortnight;
       case TimeUnit.month:
-        return 'month';
+        return loc.month;
       case TimeUnit.quarter:
-        return 'quarter';
+        return loc.quarter;
       case TimeUnit.year:
-        return 'year';
+        return loc.year;
       case TimeUnit.decade:
-        return 'decade';
+        return loc.decade;
       case TimeUnit.century:
-        return 'century';
+        return loc.century;
     }
   }
 
@@ -330,41 +333,42 @@ extension TimeUnitExtensions on TimeUnit {
   String getSymbol({
     required String locale,
   }) {
+    final loc = lookupAppLocalizations(Locale(locale.split('_').first));
     switch (this) {
       case TimeUnit.nanosecond:
-        return 'ns';
+        return loc.nanosecondSymbol;
       case TimeUnit.microsecond:
-        return 'μs';
+        return loc.microsecondSymbol;
       case TimeUnit.millisecond:
-        return 'ms';
+        return loc.millisecondSymbol;
       case TimeUnit.centisecond:
-        return 'cs';
+        return loc.centisecondSymbol;
       case TimeUnit.decisecond:
-        return 'ds';
+        return loc.decisecondSymbol;
       case TimeUnit.second:
-        return 's';
+        return loc.secondSymbol;
       case TimeUnit.decasecond:
-        return 'das';
+        return loc.decasecondSymbol;
       case TimeUnit.minute:
-        return 'min';
+        return loc.minuteSymbol;
       case TimeUnit.hour:
-        return 'hr';
+        return loc.hourSymbol;
       case TimeUnit.day:
-        return 'd';
+        return loc.daySymbol;
       case TimeUnit.week:
-        return 'wk';
+        return loc.weekSymbol;
       case TimeUnit.fortnight:
-        return 'fn';
+        return loc.fortnightSymbol;
       case TimeUnit.month:
-        return 'mo';
+        return loc.monthSymbol;
       case TimeUnit.quarter:
-        return 'qr';
+        return loc.quarterSymbol;
       case TimeUnit.year:
-        return 'yr';
+        return loc.yearSymbol;
       case TimeUnit.decade:
-        return 'dec';
+        return loc.decadeSymbol;
       case TimeUnit.century:
-        return 'c';
+        return loc.centurySymbol;
     }
   }
 

@@ -448,7 +448,8 @@ abstract class UnitOfMeasurementFormat<TValue, TUnit> {
       value: quantity,
       locale: locale,
     );
-    final result = _nodes.map((node) => node.evaluate(context)).join('').trim();
+    final result =
+        _nodes.map((node) => node.evaluate(context)).join(' ').trim();
     return result;
   }
 

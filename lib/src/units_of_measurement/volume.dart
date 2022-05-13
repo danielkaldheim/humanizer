@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
+import 'package:humanizer/l10n/humanizer_localizations.dart';
 import 'package:humanizer/src/units_of_measurement/rationals.dart';
 import 'package:humanizer/src/units_of_measurement/volume_constants.dart';
 import 'package:meta/meta.dart';
@@ -25,9 +27,25 @@ class Volume extends UnitOfMeasurement<VolumeUnit, Volume> {
   factory Volume.fromCubicMillimeters(Rational cubicMillimeters) =>
       Volume.fromUnits(VolumeUnit.cubicMillimeter, cubicMillimeters);
 
+  /// Creates a [Volume] representing the specified number of [centiliters].
+  factory Volume.fromCentiliters(Rational centiliters) =>
+      Volume.fromUnits(VolumeUnit.centiliter, centiliters);
+
+  /// Creates a [Volume] representing the specified number of [deciliters].
+  factory Volume.fromDeciliters(Rational deciliters) =>
+      Volume.fromUnits(VolumeUnit.deciliter, deciliters);
+
   /// Creates a [Volume] representing the specified number of [milliliters].
   factory Volume.fromMilliliters(Rational milliliters) =>
       Volume.fromUnits(VolumeUnit.milliliter, milliliters);
+
+  /// Creates a [Volume] representing the specified number of [tablespoons].
+  factory Volume.fromTablespoons(Rational tablespoons) =>
+      Volume.fromUnits(VolumeUnit.tablespoon, tablespoons);
+
+  /// Creates a [Volume] representing the specified number of [teaspoons].
+  factory Volume.fromTeaspoons(Rational teaspoons) =>
+      Volume.fromUnits(VolumeUnit.teaspoon, teaspoons);
 
   /// Creates a [Volume] representing the specified number of [imperialTeaspoons].
   factory Volume.fromImperialTeaspoons(Rational imperialTeaspoons) =>
@@ -146,8 +164,20 @@ class Volume extends UnitOfMeasurement<VolumeUnit, Volume> {
   /// Gets the number of cubic millimeters in this [Volume], including any fractional portion.
   Rational get cubicMillimeters => getUnits(VolumeUnit.cubicMillimeter);
 
+  /// Gets the number of deciliters in this [Volume], including any fractional portion.
+  Rational get deciliters => getUnits(VolumeUnit.deciliter);
+
+  /// Gets the number of centiliters in this [Volume], including any fractional portion.
+  Rational get centiliters => getUnits(VolumeUnit.centiliter);
+
   /// Gets the number of milliliters in this [Volume], including any fractional portion.
   Rational get milliliters => getUnits(VolumeUnit.milliliter);
+
+  /// Gets the number of milliliters in this [Volume], including any fractional portion.
+  Rational get tablespoons => getUnits(VolumeUnit.tablespoon);
+
+  /// Gets the number of milliliters in this [Volume], including any fractional portion.
+  Rational get teaspoons => getUnits(VolumeUnit.teaspoon);
 
   /// Gets the number of imperial teaspoons in this [Volume], including any fractional portion.
   Rational get imperialTeaspoons => getUnits(VolumeUnit.imperialTeaspoon);
@@ -260,8 +290,20 @@ enum VolumeUnit {
   /// A unit representing cubic millimeters.
   cubicMillimeter,
 
+  /// A unit representing deciliters.
+  deciliter,
+
+  /// A unit representing centiliters.
+  centiliter,
+
   /// A unit representing milliliters, which is the common name for cubic centimeters.
   milliliter,
+
+  /// A unit representing metric teaspoon
+  teaspoon,
+
+  /// A unit representing metric tablespoon
+  tablespoon,
 
   /// A unit representing imperial teaspoons.
   imperialTeaspoon,
@@ -347,6 +389,8 @@ class VolumeUnits {
     VolumeUnit.cubicNanometer,
     VolumeUnit.cubicMicrometer,
     VolumeUnit.cubicMillimeter,
+    VolumeUnit.deciliter,
+    VolumeUnit.centiliter,
     VolumeUnit.milliliter,
     VolumeUnit.liter,
     VolumeUnit.cubicMeter,
@@ -354,6 +398,8 @@ class VolumeUnits {
     VolumeUnit.cubicKilometer,
     VolumeUnit.cubicMegameter,
     VolumeUnit.cubicGigameter,
+    VolumeUnit.teaspoon,
+    VolumeUnit.tablespoon,
 
     // Imperial.
     VolumeUnit.cubicThou,
@@ -386,12 +432,16 @@ class VolumeUnits {
     VolumeUnit.cubicMicrometer,
     VolumeUnit.cubicMillimeter,
     VolumeUnit.milliliter,
+    VolumeUnit.centiliter,
+    VolumeUnit.deciliter,
     VolumeUnit.liter,
     VolumeUnit.cubicMeter,
     VolumeUnit.cubicDecameter,
     VolumeUnit.cubicKilometer,
     VolumeUnit.cubicMegameter,
     VolumeUnit.cubicGigameter,
+    VolumeUnit.teaspoon,
+    VolumeUnit.tablespoon,
   };
 
   /// Contains imperial [VolumeUnit]s.
@@ -425,6 +475,8 @@ class VolumeUnits {
   /// Contains commonly used International System of Units (SI) [VolumeUnit]s.
   static const commonSi = <VolumeUnit>{
     VolumeUnit.milliliter,
+    VolumeUnit.centiliter,
+    VolumeUnit.deciliter,
     VolumeUnit.liter,
   };
 }
@@ -442,8 +494,16 @@ extension VolumeUnitExtensions on VolumeUnit {
         return cubicMetersInCubicMillimeter;
       case VolumeUnit.milliliter:
         return cubicMetersInMilliliter;
+      case VolumeUnit.centiliter:
+        return cubicMetersInCentiliter;
+      case VolumeUnit.deciliter:
+        return cubicMetersInDeciliter;
       case VolumeUnit.liter:
         return cubicMetersInLiter;
+      case VolumeUnit.teaspoon:
+        return cubicMetersInTeaspoon;
+      case VolumeUnit.tablespoon:
+        return cubicMetersInTablespoon;
       case VolumeUnit.cubicMeter:
         return cubicMetersInCubicMeter;
       case VolumeUnit.cubicDecameter:
@@ -505,72 +565,81 @@ extension VolumeUnitExtensions on VolumeUnit {
   String getName({
     required String locale,
   }) {
+    final loc = lookupAppLocalizations(Locale(locale.split('_').first));
     switch (this) {
       // SI.
       case VolumeUnit.cubicNanometer:
-        return 'cubic nanometer';
+        return loc.cubicNanometer;
       case VolumeUnit.cubicMicrometer:
-        return 'cubic micrometer';
+        return loc.cubicMicrometer;
       case VolumeUnit.cubicMillimeter:
-        return 'cubic millimeter';
+        return loc.cubicMillimeter;
       case VolumeUnit.milliliter:
-        return 'milliliter';
+        return loc.milliliter;
+      case VolumeUnit.centiliter:
+        return loc.centiliter;
+      case VolumeUnit.deciliter:
+        return loc.deciliter;
       case VolumeUnit.liter:
-        return 'Liter';
+        return loc.liter;
       case VolumeUnit.cubicMeter:
-        return 'Cubic meter';
+        return loc.cubicMeter;
       case VolumeUnit.cubicDecameter:
-        return 'Cubic decameter';
+        return loc.cubicDecameter;
       case VolumeUnit.cubicKilometer:
-        return 'Cubic kilometer';
+        return loc.cubicKilometer;
       case VolumeUnit.cubicMegameter:
-        return 'Cubic megameter';
+        return loc.cubicMegameter;
       case VolumeUnit.cubicGigameter:
-        return 'Cubic gigameter';
+        return loc.cubicGigameter;
+      case VolumeUnit.teaspoon:
+        return loc.teaspoon;
+      case VolumeUnit.tablespoon:
+        return loc.tablespoon;
 
       // Imperial.
       case VolumeUnit.cubicThou:
-        return 'cubic thou';
+        return loc.cubicThou;
       case VolumeUnit.imperialTeaspoon:
-        return 'imperial teaspoon';
+        return loc.imperialTeaspoon;
       case VolumeUnit.imperialTablespoon:
-        return 'Imperial tablespoon';
+        return loc.imperialTablespoon;
       case VolumeUnit.imperialFluidOunce:
-        return 'Imperial fluid ounce';
+        return loc.imperialFluidOunce;
       case VolumeUnit.imperialCup:
-        return 'Imperial cup';
+        return loc.imperialCup;
       case VolumeUnit.imperialPint:
-        return 'Imperial pint';
+        return loc.imperialPint;
       case VolumeUnit.imperialQuart:
-        return 'Imperial quart';
+        return loc.imperialQuart;
       case VolumeUnit.imperialGallon:
-        return 'Imperial gallon';
+        return loc.imperialGallon;
       case VolumeUnit.cubicInch:
-        return 'Cubic inch';
+        return loc.cubicInch;
       case VolumeUnit.cubicFoot:
-        return 'Cubic foot';
+        return loc.cubicFoot;
       case VolumeUnit.cubicYard:
-        return 'Cubic yard';
+        return loc.cubicYard;
       case VolumeUnit.cubicMile:
-        return 'Cubic mile';
+        return loc.cubicMile;
 
       // US.
       case VolumeUnit.usTeaspoon:
-        return 'US teaspoon';
+        return loc.usTeaspoon;
       case VolumeUnit.usTablespoon:
-        return 'US tablespoon';
+        return loc.usTablespoon;
       case VolumeUnit.usFluidOunce:
-        return 'US fluid ounce';
+        return loc.usFluidOunce;
       case VolumeUnit.usCustomaryCup:
-        return 'US customary cup';
+        return loc.usCustomaryCup;
       case VolumeUnit.usLegalCup:
-        return 'US legal cup';
+        return loc.usLegalCup;
       case VolumeUnit.usLiquidPint:
-        return 'US liquid pint';
+        return loc.usLiquidPint;
       case VolumeUnit.usLiquidQuart:
-        return 'US liquid quart';
+        return loc.usLiquidQuart;
       case VolumeUnit.usLiquidGallon:
-        return 'US liquid gallon';
+        return loc.usLiquidGallon;
     }
   }
 
@@ -578,72 +647,81 @@ extension VolumeUnitExtensions on VolumeUnit {
   String getSymbol({
     required String locale,
   }) {
+    final loc = lookupAppLocalizations(Locale(locale.split('_').first));
     switch (this) {
       // SI.
       case VolumeUnit.cubicNanometer:
-        return 'nm³';
+        return loc.cubicNanometerSymbol;
       case VolumeUnit.cubicMicrometer:
-        return 'μm³';
+        return loc.cubicMicrometerSymbol;
       case VolumeUnit.cubicMillimeter:
-        return 'mm³';
+        return loc.cubicMillimeterSymbol;
+      case VolumeUnit.centiliter:
+        return loc.centiliterSymbol;
+      case VolumeUnit.deciliter:
+        return loc.deciliterSymbol;
       case VolumeUnit.milliliter:
-        return 'mL';
+        return loc.milliliterSymbol;
       case VolumeUnit.liter:
-        return 'L';
+        return loc.literSymbol;
       case VolumeUnit.cubicMeter:
-        return 'm³';
+        return loc.cubicMeterSymbol;
       case VolumeUnit.cubicDecameter:
-        return 'dam³';
+        return loc.cubicDecameterSymbol;
       case VolumeUnit.cubicKilometer:
-        return 'km³';
+        return loc.cubicKilometerSymbol;
       case VolumeUnit.cubicMegameter:
-        return 'Mm³';
+        return loc.cubicMegameterSymbol;
       case VolumeUnit.cubicGigameter:
-        return 'Gm³';
+        return loc.cubicGigameterSymbol;
+      case VolumeUnit.teaspoon:
+        return loc.teaspoonSymbol;
+      case VolumeUnit.tablespoon:
+        return loc.tablespoonSymbol;
 
       // Imperial.
       case VolumeUnit.cubicThou:
-        return 'thou³';
+        return loc.cubicThouSymbol;
       case VolumeUnit.imperialTeaspoon:
-        return 'tsp';
+        return loc.imperialTeaspoonSymbol;
       case VolumeUnit.imperialTablespoon:
-        return 'Tbsp';
+        return loc.imperialTablespoonSymbol;
       case VolumeUnit.imperialFluidOunce:
-        return 'fl oz';
+        return loc.imperialFluidOunceSymbol;
       case VolumeUnit.imperialCup:
-        return 'c';
+        return loc.imperialCupSymbol;
       case VolumeUnit.imperialPint:
-        return 'pt';
+        return loc.imperialPintSymbol;
       case VolumeUnit.imperialQuart:
-        return 'qt';
+        return loc.imperialQuartSymbol;
       case VolumeUnit.imperialGallon:
-        return 'gal';
+        return loc.imperialGallonSymbol;
       case VolumeUnit.cubicInch:
-        return 'in³';
+        return loc.cubicInchSymbol;
       case VolumeUnit.cubicFoot:
-        return 'ft³';
+        return loc.cubicFootSymbol;
       case VolumeUnit.cubicYard:
-        return 'yd³';
+        return loc.cubicYardSymbol;
       case VolumeUnit.cubicMile:
-        return 'mi³';
+        return loc.cubicMileSymbol;
 
       // US.
       case VolumeUnit.usTeaspoon:
-        return 'tsp';
+        return loc.usTeaspoonSymbol;
       case VolumeUnit.usTablespoon:
-        return 'Tbsp';
+        return loc.usTablespoonSymbol;
       case VolumeUnit.usFluidOunce:
-        return 'fl oz';
+        return loc.usFluidOunceSymbol;
       case VolumeUnit.usCustomaryCup:
-        return 'c';
+        return loc.usCustomaryCupSymbol;
       case VolumeUnit.usLegalCup:
-        return 'c';
+        return loc.usLegalCupSymbol;
       case VolumeUnit.usLiquidPint:
-        return 'pt';
+        return loc.usLiquidPintSymbol;
       case VolumeUnit.usLiquidQuart:
-        return 'qt';
+        return loc.usLiquidQuartSymbol;
       case VolumeUnit.usLiquidGallon:
-        return 'gal';
+        return loc.usLiquidGallonSymbol;
     }
   }
 

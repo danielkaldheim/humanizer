@@ -1,4 +1,6 @@
 import 'package:humanizer/humanizer.dart';
+import 'package:humanizer/src/transformations/pluralizationRules_en.dart';
+import 'package:humanizer/src/transformations/pluralizationRules_nb.dart';
 
 /// A transformation to convert the plural form of an input [String].
 ///
@@ -28,7 +30,7 @@ class PluralityTransformation extends Transformation<String, String> {
     this.inputMayAlreadyHaveTargetPlurality = true,
   });
 
-  static final _pluralizationRules = _createEnglishPluralizationRules();
+  static final _pluralizationRules = createEnglishPluralizationRules();
 
   /// The desired plurality for transformed inputs.
   final Plurality targetPlurality;
@@ -40,15 +42,16 @@ class PluralityTransformation extends Transformation<String, String> {
 
   @override
   String transform(String input, String locale) {
+    final pluralizationRules = lookupPluralizationRulesLocalizations(locale);
     switch (targetPlurality) {
       case Plurality.plural:
-        final result = _pluralizationRules.pluralize(
+        final result = pluralizationRules.pluralize(
           input,
           wordIsKnownToBeSingular: !inputMayAlreadyHaveTargetPlurality,
         );
         return result;
       case Plurality.singular:
-        final result = _pluralizationRules.singularize(
+        final result = pluralizationRules.singularize(
           input,
           wordIsKnownToBePlural: !inputMayAlreadyHaveTargetPlurality,
         );
@@ -67,7 +70,7 @@ enum Plurality {
 }
 
 /// Encapsulates a set of rules used to transform the plurality of words.
-class _PluralizationRules {
+class PluralizationRules {
   final _pluralRules = <_PluralizationRule>[];
   final _singularRules = <_PluralizationRule>[];
   final _uncountables = <String>{};
@@ -264,257 +267,20 @@ _ReplaceMatch _getReplaceMatch(String pattern) =>
           return result;
         });
 
-_PluralizationRules _createEnglishPluralizationRules() {
-  final result = _PluralizationRules();
+PluralizationRules lookupPluralizationRulesLocalizations(String locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale) {
+    case 'en':
+      return createEnglishPluralizationRules();
+    case 'nb':
+      return createNorwegianPluralizationRules();
+    default:
+      return createEnglishPluralizationRules();
+  }
 
-  _irregularWordsWithMatchEnding
-      .forEach((singular, plural) => result.addIrregularRule(
-            singular: singular,
-            plural: plural,
-            matchEnding: true,
-          ));
-
-  _irregularWordsWithoutMatchEnding
-      .forEach((singular, plural) => result.addIrregularRule(
-            singular: singular,
-            plural: plural,
-            matchEnding: false,
-          ));
-
-  _pluralRules.forEach((pattern, replacement) => result.addPluralRule(
-        pattern: RegExp(
-          pattern,
-          caseSensitive: false,
-        ),
-        replacement: replacement,
-      ));
-
-  _singularRules.forEach((pattern, replacement) => result.addSingularRule(
-        pattern: RegExp(
-          pattern,
-          caseSensitive: false,
-        ),
-        replacement: replacement,
-      ));
-
-  _uncountables.forEach(result.addUncountable);
-
-  return result;
+  // throw FlutterError(
+  //     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+  //     'an issue with the localizations generation tool. Please file an issue '
+  //     'on GitHub with a reproducible sample app and the gen-l10n configuration '
+  //     'that was used.');
 }
-
-final _pluralRules = <String, String>{
-  r'(apheli|hyperbat|periheli|asyndet|noumen|phenomen|criteri|organ|prolegomen|hedr|automat)(?:a|on)\b':
-      r'$1a',
-  r'(alumn|alg|larv|vertebr)a\b': r'$1ae',
-  r'(hoo|lea|loa|thie)f\b': r'$1ves',
-  r'(buz|blit|walt)z\b': r'$1zes',
-  r'(quiz)\b': r'$1zes',
-  r'(\b[m|l])ouse\b': r'$1ice',
-  r'(matr|vert|ind|d)ix|ex\b': r'$1ices',
-  r'(x|ch|ss|sh)\b': r'$1es',
-  r'([^aeiouy]|qu)y\b': r'$1ies',
-  r'(hive)\b': r'$1s',
-  r'(?:(kni|wi|li)fe|(ar|l|ea|eo|oa|hoo)f)\b': r'$1$2ves',
-  r'sis\b': 'ses',
-  r'([dti])um\b': r'$1a',
-  r'(buffal|tomat|volcan|ech|embarg|her|mosquit|potat|torped|vet)o\b': r'$1oes',
-  r'(alias|bias|hippopotamus|octopus|iris|status|campus|apparatus|virus|walrus|trellis)\b':
-      r'$1es',
-  r'(vir|alumn|fung|cact|foc|radi|stimul|syllab|nucle)us\b': r'$1i',
-  r'(ax|test)is\b': r'$1es',
-  r'(seraph|cherub)(?:im)?\b': r'$1im',
-  r's\b': 's',
-  r'(\w)\b': r'$1s',
-};
-
-final _singularRules = <String, String>{
-  r'([b|r|c]ook|room|smooth)ies\b': r'$1ie',
-  r'(criteri|phenomen)a\b': r'$1on',
-  r'(alumn|alg|larv|vertebr)ae\b': r'$1a',
-  r'(buz|blit|walt)zes\b': r'$1z',
-  r'(quiz)zes\b': r'$1',
-  r'(vert|ind)ices\b': r'$1ex',
-  r'(matr|d)ices\b': r'$1ix',
-  r'(alias|bias|hippopotamus|octopus|iris|status|campus|apparatus|virus|walrus|trellis)es\b':
-      r'$1',
-  r'(vir|alumn|fung|cact|foc|radi|stimul|syllab|nucle)i\b': r'$1us',
-  r'(cris|ax|test)es\b': r'$1is',
-  r'(shoe)s\b': r'$1',
-  r'(o)es\b': r'$1',
-  r'(\b[m|l])ice\b': r'$1ouse',
-  r'(x|ch|ss|sh)es\b': r'$1',
-  r'(m)ovies\b': r'$1ovie',
-  r'(s)eries\b': r'$1eries',
-  r'(\bzomb)?([^aeiouy]|qu)ies\b': r'$2y',
-  r'([lr]|hoo|lea|loa|thie)ves\b': r'$1f',
-  r'(tive)s\b': r'$1',
-  r'(hive)s\b': r'$1',
-  r'(wi|kni|(?:after|half|high|low|mid|non|night|[^\w]|^)li)ves\b': r'$1fe',
-  r'(analy|ba|diagno|parenthe|progno|synop|the|ellip|empha|neuro|oa|paraly)ses\b':
-      r'$1sis',
-  r'([dti])a\b': r'$1um',
-  r'(n)ews\b': r'$1ews',
-  r'(seraph|cherub)im\b': r'$1',
-  r's\b': '',
-};
-
-// Words that don't pluralize in a manner best described with rules, matched at ending (full match not required).
-final _irregularWordsWithMatchEnding = <String, String>{
-  'cache': 'caches',
-  'child': 'children',
-  'curriculum': 'curricula',
-  'database': 'databases',
-  'die': 'dice',
-  'foot': 'feet',
-  'glove': 'gloves',
-  'goose': 'geese',
-  'human': 'humans',
-  'man': 'men',
-  'move': 'moves',
-  'person': 'people',
-  'personnel': 'personnel',
-  'sex': 'sexes',
-  'tooth': 'teeth',
-  'wave': 'waves',
-  'zombie': 'zombies',
-};
-
-// Same, but don't fully match only.
-final _irregularWordsWithoutMatchEnding = <String, String>{
-  'bus': 'buses',
-  'ex': 'exes',
-  'he': 'they',
-  'herself': 'themselves',
-  'himself': 'themselves',
-  'i': 'we',
-  'is': 'are',
-  'it': 'they',
-  'itself': 'themselves',
-  'me': 'us',
-  'myself': 'ourselves',
-  'ox': 'oxen',
-  'she': 'they',
-  'staff': 'staff',
-  'that': 'those',
-  'this': 'these',
-  'training': 'training',
-};
-
-// Singular form words with no plural.
-final _uncountables = <String>{
-  'adulthood',
-  'advice',
-  'agenda',
-  'aid',
-  'aircraft',
-  'alcohol',
-  'ammo',
-  'analytics',
-  'anime',
-  'athletics',
-  'audio',
-  'bison',
-  'blood',
-  'bream',
-  'butter',
-  'carp',
-  'cash',
-  'chassis',
-  'chess',
-  'clothing',
-  'cod',
-  'commerce',
-  'cooperation',
-  'corn',
-  'corps',
-  'debris',
-  'deer',
-  'diabetes',
-  'digestion',
-  'elk',
-  'energy',
-  'equipment',
-  'excretion',
-  'expertise',
-  'firmware',
-  'fish',
-  'flounder',
-  'fun',
-  'gallows',
-  'garbage',
-  'graffiti',
-  'grass',
-  'hair',
-  'hardware',
-  'headquarters',
-  'health',
-  'herpes',
-  'highjinks',
-  'homework',
-  'housework',
-  'information',
-  'jeans',
-  'justice',
-  'kudos',
-  'l',
-  'labour',
-  'literature',
-  'luggage',
-  'machinery',
-  'mackerel',
-  'mail',
-  'manga',
-  'means',
-  'mews',
-  'milk',
-  'ml',
-  'money',
-  'moose',
-  'mud',
-  'music',
-  'news',
-  'offspring',
-  'only',
-  'oz',
-  'personnel',
-  'pike',
-  'plankton',
-  'pliers',
-  'police',
-  'pollution',
-  'premises',
-  'rain',
-  'research',
-  'rice',
-  'salmon',
-  'scissors',
-  'semen',
-  'series',
-  'sewage',
-  'shambles',
-  'sheep',
-  'shrimp',
-  'software',
-  'someone',
-  'species',
-  'sperm',
-  'staff',
-  'swine',
-  'tbsp',
-  'tennis',
-  'traffic',
-  'transportation',
-  'trout',
-  'tsp',
-  'tuna',
-  'water',
-  'waters',
-  'wealth',
-  'welfare',
-  'which',
-  'whiting',
-  'who',
-  'wildebeest',
-  'wildlife',
-  'you',
-};

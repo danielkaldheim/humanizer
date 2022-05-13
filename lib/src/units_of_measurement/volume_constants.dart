@@ -6,12 +6,16 @@ final cubicMetersInCubicNanometer = Rationals.octillionth;
 final cubicMetersInCubicMicrometer = Rationals.quintillionth;
 final cubicMetersInCubicMillimeter = Rationals.billionth;
 final cubicMetersInMilliliter = Rationals.millionth;
+final cubicMetersInDeciliter = Rationals.tenThousandth;
+final cubicMetersInCentiliter = Rationals.hundredth * Rationals.thousandth;
 final cubicMetersInLiter = Rationals.thousandth;
 final cubicMetersInCubicMeter = Rationals.one;
 final cubicMetersInCubicDecameter = Rationals.thousand;
 final cubicMetersInCubicKilometer = Rationals.billion;
 final cubicMetersInCubicMegameter = Rationals.quintillion;
 final cubicMetersInCubicGigameter = Rationals.octillion;
+final cubicMetersInTablespoon = Rationals.millionth * Rational.fromInt(15);
+final cubicMetersInTeaspoon = cubicMetersInTablespoon * Rationals.third;
 
 // Imperial.
 final cubicMetersInCubicThou = metersInThou * metersInThou * metersInThou;
