@@ -3,7 +3,6 @@ import 'package:humanizer/humanizer.dart';
 import 'package:humanizer/l10n/humanizer_localizations.dart';
 import 'package:humanizer/src/units_of_measurement/rationals.dart';
 import 'package:humanizer/src/units_of_measurement/weight_constants.dart';
-import 'package:meta/meta.dart';
 
 /// A unit of measurement representing a weight.
 class Weight extends UnitOfMeasurement<WeightUnit, Weight> {

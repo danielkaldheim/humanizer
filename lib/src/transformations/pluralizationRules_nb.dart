@@ -59,6 +59,7 @@ final _NB_PluralRules = <String, String>{
   // r'(vir|alumn|fung|cact|foc|radi|stimul|syllab|nucle)us\b': r'$1i',
   // r'(ax|test)is\b': r'$1es',
   // r'(seraph|cherub)(?:im)?\b': r'$1im',
+  r'e\b': 'er',
   r'er\b': 'er',
   r'(\w)\b': r'$1er',
 };
@@ -91,6 +92,7 @@ final _NB_singularRules = <String, String>{
   // r'([dti])a\b': r'$1um',
   // r'(n)ews\b': r'$1ews',
   // r'(seraph|cherub)im\b': r'$1',
+  // r'e\b': 'er',
   r'er\b': '',
 };
 
@@ -138,6 +140,17 @@ final _NB_irregularWordsWithoutMatchEnding = <String, String>{
 
 // Singular form words with no plural.
 final _NB_uncountables = <String>{
+  'barn',
+  'hus',
+  'lam',
+  'strå',
+  'tak',
+  'vers',
+  'blad',
+  'bord',
+  'fat',
+  'hull',
+  'verk'
   // 'adulthood',
   // 'advice',
   // 'agenda',
